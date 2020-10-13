@@ -1,0 +1,506 @@
+course: ISEX2
+year: 2020
+report: R1
+department: 工情
+id: 8165
+name: 和田哲也
+email: wada.tetsuya11@gmail.com
+computer: 自宅のパソコン Mac
+compiler: g++
+hour: 3
+
+<<EX-1.1>>
+
+（プログラムの説明）
+身長と体重を入力するとBMIを出力するプログラムを作成した。
+
+（実行結果）
+(base) wadatetsuya@MacBook-Pro program % ./hello              
+身長(cm)：168
+体重(kg)：61
+BMI：21.6128
+
+（実験状況・感想）
+自分の身長と体重で計算したところ、理想的なBMIであり満足した。最初に誤ってintのまま割り算をしており微妙に結果がずれてしまい、自分のBMIが19と出力されて焦った。
+
+<<EX-1.1 program>>
+
+#include <iostream>
+#include <math.h>
+
+int main()
+{
+    double h;
+    double w;
+    std::cout << "身長(cm)：";
+    std::cin >> h;
+    std::cout << "体重(kg)：";
+    std::cin >> w;
+    double bmi = w / pow((h / 100), 2);
+    std::cout << "BMI：" << bmi << std::endl;
+    return 0;
+}
+
+<<EX-1.2>>
+
+（プログラムの説明）
+2 つの整数型のデータの内容を交換する
+
+（実行結果）
+(base) wadatetsuya@MacBook-Pro program % ./ex1-2 
+a=6
+b=5
+
+(感想)
+ポインタの概念を忘れていて少し混乱したが、思い出しながらなんとかプログラムを作ることができた。&の便利さには驚いた。
+
+<<EX-1.2 program>>
+
+#include <iostream>
+
+void swap(int &x, int &y)
+{
+    int tmp = x;
+    x = y;
+    y = tmp;
+}
+
+int main()
+{
+    int a = 5;
+    int b = 6;
+    swap(a, b);
+    std::cout << "a=" << a << std::endl;
+    std::cout << "b=" << b << std::endl;
+    return 0;
+}
+
+<<EX-1.3>>
+
+（プログラムの説明）
+stackの動作をするクラスの作成と実行
+
+（実行結果）
+(base) wadatetsuya@MacBook-Pro program % ./ex1-3              
+9
+8
+2
+3
+5
+
+(実験状況・感想)
+別の言語でオブジェクト指向については学んでいたためスムーズに進めることができた。途中で「＝」を「＝＝」と書き間違えておりおかしな挙動となったが、15分の格闘の末にデバッグすることができた。
+
+<<EX-1.3 program>>
+
+#include <iostream>
+#include <assert.h>
+
+class stack
+{
+private:
+    static const int max = 100;
+    int data[max];
+    int sp;
+
+public:
+    bool empty();
+    void push(int);
+    int top();
+    void pop();
+    int size();
+    stack();
+    ~stack();
+};
+
+bool stack::empty()
+{
+    return sp == 0;
+}
+
+void stack::push(int d)
+{
+    assert(sp < max);
+    data[sp++] = d;
+}
+
+int stack::top()
+{
+    return data[sp - 1];
+}
+
+void stack::pop()
+{
+    assert(0 < sp);
+    --sp;
+}
+
+int stack::size()
+{
+    return sp;
+}
+
+stack::stack() { sp = 0; }
+
+stack::~stack(){};
+
+int main()
+{
+    stack s;
+    s.push(5);
+    s.push(8);
+    s.push(9);
+    std::cout << s.top() << std::endl;
+    s.pop();
+    std::cout << s.top() << std::endl;
+    s.pop();
+    s.push(3);
+    std::cout << s.size() << std::endl;
+    while (!s.empty())
+    {
+        std::cout << s.top() << std::endl;
+        s.pop();
+    }
+    return 0;
+}
+
+<<EX-1.4>>
+
+（プログラムの説明）
+EX1-3の内容を入れるを動的に割り当てるバージョンに変更
+
+（実行結果）
+base) wadatetsuya@MacBook-Pro program % ./ex1-4              
+max=45
+9
+8
+2
+3
+5
+
+（実験状況・感想）
+なんとか作ることができた。ポインタに慣れておらず混乱して時間がかかった。
+
+<<EX-1.4 program>>
+
+#include <iostream>
+#include <assert.h>
+
+class stack
+{
+private:
+    int max;
+    int *data;
+    int sp;
+
+public:
+    bool empty() { return sp == 0; }
+    void push(int d)
+    {
+        assert(sp <= max);
+        data[sp++] = d;
+    }
+    int top() { return data[sp - 1]; }
+    void pop()
+    {
+        assert(0 < sp);
+        --sp;
+    }
+    int size() { return sp; }
+    stack(int sz = 100)
+    {
+        sp = 0;
+        max = sz;
+        data = new int[max];
+        std::cout << "max=" << max << std::endl;
+    }
+    ~stack() { delete[] data; }
+};
+
+int main()
+{
+    stack s(45);
+    s.push(5);
+    s.push(8);
+    s.push(9);
+    std::cout << s.top() << std::endl;
+    s.pop();
+    std::cout << s.top() << std::endl;
+    s.pop();
+    s.push(3);
+    std::cout << s.size() << std::endl;
+    while (!s.empty())
+    {
+        std::cout << s.top() << std::endl;
+        s.pop();
+    }
+    return 0;
+}
+
+<<EX-1.5>>
+
+（プログラムの説明）
+stackにequal(const stack&, const stack&)を追加したバージョンを作成した
+
+（実行結果）
+(base) wadatetsuya@MacBook-Pro program % ./ex1-5              
+0
+1
+
+（実験状況・感想）
+最初から上手く動作させることができたので気持ちがよかった。
+
+<<EX-1.5 program>>
+
+#include <iostream>
+#include <assert.h>
+
+class stack
+{
+private:
+    int max;
+    int *data;
+    int sp;
+
+public:
+    bool empty() { return sp == 0; }
+    void push(int d)
+    {
+        assert(sp <= max);
+        data[sp++] = d;
+    }
+    int top() { return data[sp - 1]; }
+    void pop()
+    {
+        assert(0 < sp);
+        --sp;
+    }
+    int size() { return sp; }
+    friend bool equal(const stack &, const stack &);
+    stack(int sz = 100)
+    {
+        sp = 0;
+        max = sz;
+        data = new int[max];
+    }
+    ~stack() { delete[] data; }
+};
+
+bool equal(const stack &s1, const stack &s2)
+{
+    bool eq = true;
+    if (s1.sp != s2.sp)
+        eq = false;
+    else
+    {
+        for (int j = 0; j < s1.sp && eq; j++)
+        {
+            if (s1.data[j] != s2.data[j])
+                eq = false;
+        }
+    }
+    return eq;
+}
+
+int main()
+{
+    stack s1, s2;
+    s1.push(5);
+    s1.push(8);
+    s1.push(9);
+    s2.push(5);
+    s2.push(8);
+    s2.push(9);
+    s2.push(10);
+    std::cout << equal(s1, s2) << std::endl;
+    s2.pop();
+    std::cout << equal(s1, s2) << std::endl;
+    return 0;
+}
+
+<<EX-1.6>>
+
+（プログラムの説明）
+Complex型データを作成し扱うプログラム
+
+（実行結果）
+(base) wadatetsuya@MacBook-Pro program % ./ex1-6              
+1.11+2.22i
+3.33+4.44i
+9.99+8.88i
+1.11+2.22i
+5.55+0i
+
+（実験状況・感想）
+オブジェクト指向には慣れているのでスムーズにプログラムを書くことができた。オーバーロードは非常に便利であることを改めて実感した。
+
+
+<<EX-1.6 program>>
+
+#include <iostream>
+
+class Complex
+{
+private:
+    double real;
+    double imag;
+
+public:
+    Complex()
+    {
+        real = 0.0;
+        imag = 0.0;
+    }
+    Complex(double r)
+    {
+        real = r;
+        imag = 0.0;
+    }
+    Complex(double r, double i)
+    {
+        real = r;
+        imag = i;
+    }
+    ~Complex() {}
+    double re() { return real; }
+    double im() { return imag; }
+    void set_re(double r) { real = r; }
+    void set_im(double i) { imag = i; }
+    void print(std::ostream &os) { os << real << "+" << imag << "i"; }
+};
+
+int main()
+{
+    Complex a;
+    a.set_re(1.11);
+    a.set_im(2.22);
+    Complex b(3.33, 4.44);
+    Complex c;
+    c = Complex(9.99, 8.88);
+    a.print(std::cout);
+    std::cout << std::endl;
+    b.print(std::cout);
+    std::cout << std::endl;
+    c.print(std::cout);
+    std::cout << std::endl;
+    c = a;
+    c.print(std::cout);
+    std::cout << std::endl;
+    Complex d(5.55);
+    d.print(std::cout);
+    std::cout << std::endl;
+    return 0;
+}
+
+<<EX-1.7>>
+
+（プログラムの説明）
+Complexに対する加算・減算・乗算を行うプログラム
+
+（実行結果）
+(base) wadatetsuya@MacBook-Pro program % ./ex1-7              
+a+b=4.44+6.66i
+b-a=2.22+2.22i
+a*b=13.5531+12.321i
+
+（実験状況・感想）
+演算を自分で自由に定義できることに面白みを感じた。
+
+<<EX-1.7 program>>
+
+#include <iostream>
+
+class Complex
+{
+private:
+    double real;
+    double imag;
+
+public:
+    Complex()
+    {
+        real = 0.0;
+        imag = 0.0;
+    }
+    Complex(double r)
+    {
+        real = r;
+        imag = 0.0;
+    }
+    Complex(double r, double i)
+    {
+        real = r;
+        imag = i;
+    }
+    ~Complex() {}
+    double re() { return real; }
+    double im() { return imag; }
+    void set_re(double r) { real = r; }
+    void set_im(double i) { imag = i; }
+    void print(std::ostream &os) { os << real << "+" << imag << "i"; }
+};
+
+Complex operator+(Complex a, Complex b)
+{
+    double r = a.re() + b.re();
+    double i = a.im() + b.im();
+    return Complex(r, i);
+}
+
+Complex operator-(Complex a, Complex b)
+{
+    double r = a.re() - b.re();
+    double i = a.im() - b.im();
+    return Complex(r, i);
+}
+
+Complex operator*(Complex a, Complex b)
+{
+    double r = a.re() * b.re() + a.im() * b.im();
+    double i = a.re() * b.im() + a.im() * b.re();
+    return Complex(r, i);
+}
+
+int main()
+{
+    Complex a(1.11, 2.22);
+    Complex b(3.33, 4.44);
+    Complex c;
+    c = a + b;
+
+    std::cout << "a+b=";
+    c.print(std::cout);
+    std::cout << std::endl;
+
+    c = b - a;
+    std::cout << "b-a=";
+    c.print(std::cout);
+    std::cout << std::endl;
+
+    c = a * b;
+    std::cout << "a*b=";
+    c.print(std::cout);
+    std::cout << std::endl;
+
+    return 0;
+}
+
+<<EX-1.8>>
+
+（プログラムの説明）
+Complexクラスの配列、ポインタ、参照、動的配列を扱うプログラム
+
+（実行結果）
+(base) wadatetsuya@MacBook-Pro program % ./ex1-8              
+1+2i
+1+3i
+1+2i
+2+3i
+2+4i
+2+3i
+
+<<全体の感想>>
+
+テキストが丁寧でわかりやすかった。自分で趣味的にプログラムを書く機会は多いが、このように系統だった学習をする機会は少ないので、それを授業の一環として行えるのは嬉しい。
+自分はC言語には詳しくないが、オブジェクト指向などはjavascriptやpythonを書くなかで学習指定なので比較的スムーズに演習を行えたが、プログラミング経験の少ない友人は辛そうであった。
+今後の演習内容を楽しみにしています。

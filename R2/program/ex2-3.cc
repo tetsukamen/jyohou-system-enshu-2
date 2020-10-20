@@ -44,23 +44,52 @@ std::ostream &operator<<(std::ostream &os, const Seiseki &s)
 
 void Seiseki::insert(int id, const std::string &nm, int s)
 {
-    //
-    // この婶尸を虽める
-    //
+    data.push_back(Record(id, nm, s));
 }
 
 void Seiseki::lookup(int id)
 {
-    //
-    // この婶尸を虽める
-    //
+    int flag = 0;
+    Record find;
+    std::list<Record>::iterator p;
+    for (p = data.begin(); p != data.end(); p++)
+    {
+        if ((*p).id == id)
+        {
+            find = *p;
+            flag = 1;
+        }
+    }
+    if (flag == 1)
+    {
+        std::cout << find << std::endl;
+    }
+    else
+    {
+        std::cout << "not found" << std::endl;
+    }
 }
 
 void Seiseki::erase_worst()
 {
-    //
-    // この婶尸を虽める
-    //
+    int worstScore = 200;
+    int worstId;
+    std::list<Record>::iterator p;
+    for (p = data.begin(); p != data.end(); p++)
+    {
+        if (p->score < worstScore)
+        {
+            worstScore = p->score;
+            worstId = p->id;
+        }
+    }
+    for (p = data.begin(); p != data.end(); p++)
+    {
+        if (p->id == worstId)
+        {
+            data.erase(p);
+        }
+    }
 }
 
 int main(int ac, char **av)

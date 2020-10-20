@@ -19,7 +19,7 @@ std::ostream &operator<<(std::ostream &os, const Entry &e)
     return os;
 }
 
-int main(int ac, char **av)
+int main()
 {
     Entry e[10];
     int n = 0;
@@ -30,13 +30,22 @@ int main(int ac, char **av)
     e[n++] = Entry("kyoto university", "075-753-7531");
     for (int i = 0; i < n; i++)
     {
-        //
-        // 络哄の渡戎の 4 峰步
-        //
+        /* *** 大阪の局番4 桁化 *** */
+        if (e[i].phone.substr(0, 2) == "06")
+        {
+            e[i].phone.replace(0, 3, "06-6");
+        }
     }
     std::cout << "directory service: ";
-    //
-    // 矢机误を掐蜗し, その排厦戎规を浮瑚し, 叫蜗
-    //
+    /* *** 文字列を入力し, その電話番号を検索し, 出力 *** */
+    std::string s;
+    getline(std::cin, s);
+    for (int i = 0; i < n; i++)
+    {
+        if (e[i].name == s || e[i].phone == s)
+        {
+            std::cout << e[i] << std::endl;
+        }
+    }
     return 0;
 }

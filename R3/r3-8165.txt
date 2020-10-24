@@ -1,0 +1,459 @@
+course: ISEX2
+year: 2020
+report: R3
+department: 工情
+id: 8165
+name: 和田哲也
+email: wada.tetsuya11@gmail.com
+computer: 自宅のパソコン Mac
+compiler: g++
+hour: 4.5
+
+<<EX-3.1>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out     
+aaa() // 38行目のコンストラクタ
+bbb() // 39行目のコンストラクタ
+bbb() // 39行目のコンストラクタ
+bbb() // 39行目のコンストラクタ
+aaa() // 41行目のコンストラクタ
+aaa(3,4) // 42行目のコンストラクタ
+˜aaa() // 42行目のデコンストラクタ
+aaa(7,4) // 45行目（ループ1回目）のコンストラクタ
+˜aaa() // 46行目（ループ1回目）のデコンストラクタ
+aaa(7,4) // 45行目（ループ2回目）のコンストラクタ
+˜aaa() // 46行目（ループ2回目）のデコンストラクタ
+aaa(7,4) // 45行目（ループ3回目）のコンストラクタ
+˜aaa() // 46行目（ループ3回目）のデコンストラクタ
+˜aaa() // 47行目のデコンストラクタ
+aaa() // 48行目のコンストラクタが呼ぶメンバのコンストラクタ
+bbb() // 48行目のコンストラクタが呼ぶメンバのコンストラクタ
+ccc() // 48行目のコンストラクタ
+˜ccc() // 49行目で呼ばれるデコンストラクタ（48行目で生成されたインスタンスのもの）
+˜bbb() // 49行目で呼ばれるデコンストラクタが呼ぶメンバのデコンストラクタ（48行目で生成されたインスタンスのもの）
+˜aaa() // 49行目で呼ばれるデコンストラクタが呼ぶメンバのデコンストラクタ（48行目で生成されたインスタンスのもの）
+˜bbb() // 49行目で呼ばれるデコンストラクタ（39行目で生成されたインスタンスのもの）
+˜bbb() // 49行目で呼ばれるデコンストラクタ（39行目で生成されたインスタンスのもの）
+˜bbb() // 49行目で呼ばれるデコンストラクタ（39行目で生成されたインスタンスのもの）
+˜aaa() // 49行目で呼ばれるデコンストラクタ（38行目で生成されたインスタンスのもの）
+
+（コメント）
+テキストを読んだだけではなんとなくの理解であったが、実際にプログラムを動かして可視化すると、コンストラクタ・デコンストラクタの発火タイミング、順序がよくわかった。
+
+<<EX-3.2>>
+
+（結果）
+＿予想
+main begin
+for-loop begin
+add begin
+add end
+for-loop end
+for-loop begin
+add begin
+add end
+for-loop end
+for-loop begin
+add begin
+add end
+for-loop end
+main end
+
+＿実行結果
+(base) wadatetsuya@MacBook-Pro program % ./a.out     
+main begin
+for-loop begin
+add begin
+add end
+for-loop end
+for-loop begin
+add begin
+add end
+for-loop end
+for-loop begin
+add begin
+add end
+for-loop end
+main end
+
+（コメント）
+完全に予想通りの結果が得られた。予想通り関数やブロックの開始時と終了時に表示が得られたので、デバッグには非常に使いやすそうに感じた。
+
+<<EX-3.3>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out     
+2+3i
+4+6i
+
+（コメント）
+実装しなくてもデフォルトで同じ動作をする関数であるが、実際に実装してみることで、デフォルトでどのような動作をしているのかよくわかった。今後の課題を進める上で、情報が整理できて良かった。
+
+<<EX-3.3 program>>
+
+#include <iostream>
+#include <string>
+
+class Complex
+{
+private:
+    double real;
+    double imag;
+
+public:
+    Complex()
+    {
+        real = 0.0;
+        imag = 0.0;
+    }
+    Complex(double r)
+    {
+        real = r;
+        imag = 0.0;
+    }
+    Complex(double r, double i)
+    {
+        real = r;
+        imag = i;
+    }
+    ~Complex() {}
+    double re() { return real; }
+    double im() { return imag; }
+    void set_re(double r) { real = r; }
+    void set_im(double i) { imag = i; }
+    void print(std::ostream &os) { os << real << "+" << imag << "i"; }
+    Complex &operator=(const Complex &);
+    Complex &operator+=(const Complex &);
+};
+
+Complex &Complex::operator=(const Complex &c)
+{
+    real = c.real;
+    imag = c.imag;
+    return *this;
+}
+
+Complex &Complex::operator+=(const Complex &c)
+{
+    real += c.real;
+    imag += c.imag;
+    return *this;
+}
+
+int main()
+{
+    Complex a = Complex(2, 3);
+    Complex b;
+    b = a;
+    b.print(std::cout);
+    std::cout << std::endl;
+    b += b;
+    b.print(std::cout);
+    std::cout << std::endl;
+    return 0;
+}
+
+<<EX-3.4>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out 
+max=5, sp=3, data=(1 300 500 )
+max=5, sp=3, data=(1 300 500 )
+a.out(41869,0x10ff11dc0) malloc: *** error for object 0x7ffecb4058b0: pointer being freed was not allocated
+a.out(41869,0x10ff11dc0) malloc: *** set a breakpoint in malloc_error_break to debug
+zsh: abort      ./a.out
+
+（コメント）
+期待通りの結果表示と共に、"pointer being freed was not allocated",すなわち「割り当てられていないデータをfreeした」というエラーメッセージが出力され、予想通りの結果となった。
+
+<<EX-3.5>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out 
+max=5, sp=3, data=(1 300 500 )
+max=7, sp=3, data=(1 3 5 )
+
+（コメント）
+動的割り当てを行うクラスではしっかりと代入を定義してやらなければならないことがよくわかった。エラーメッセージが出るうちはまだ良いが、今回取り扱ったようなエラーメッセージが出ないタイプの不具合が実際の開発現場で発生したらと思うとゾッとする。
+
+<<EX-3.5 program>>
+
+#include <iostream>
+#include <assert.h>
+
+class stack
+{
+private:
+    int sp;
+    int max;
+    int *data;
+
+public:
+    stack(int sz = 100)
+    {
+        sp = 0;
+        max = sz;
+        data = new int[max];
+    }
+    ~stack() { delete[] data; }
+    bool empty() { return sp == 0; }
+    void push(int d)
+    {
+        assert(sp <= max);
+        data[sp++] = d;
+    }
+    int top() { return data[sp - 1]; }
+    void pop()
+    {
+        assert(0 < sp);
+        --sp;
+    }
+    int size() { return sp; }
+    void dump(std::ostream &);
+    stack &operator=(const stack &);
+};
+
+void stack::dump(std::ostream &os)
+{
+    std::cout << "max=" << max << ", ";
+    std::cout << "sp=" << sp << ", ";
+    std::cout << "data=(";
+    for (int i = 0; i < sp; i++)
+        os << data[i] << " ";
+    os << ")" << std::endl;
+}
+
+stack &stack::operator=(const stack &s)
+{
+    if (&s != this)
+    {
+        if (max < s.sp)
+        {
+            delete[] data;
+            data = new int[max = s.max];
+        }
+    }
+    sp = s.sp;
+    for (int i = 0; i < sp; i++)
+    {
+        data[i] = s.data[i];
+    }
+    return *this;
+}
+
+int main()
+{
+    stack s1(5), s2(7);
+    s1.push(1);
+    s1.push(3);
+    s1.push(5);
+    s2 = s1;
+    s1.pop();
+    s1.pop();
+    s1.push(300);
+    s1.push(500);
+    s1.dump(std::cout);
+    s2.dump(std::cout);
+    return 0;
+}
+
+<<EX-3.6>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out       
+Complex(3.14,2.26) // 59行目のデフォルトコンストラクタ
+Complex(const Complex&) // 60行目で実行されるコピーコンストラクタ
+Complex() // 61行目のデフォルトコンストラクタ
+Complex(const Complex&) // 62行目の+演算の、xをaにコピーする際のコピーコンストラクタ
+Complex(const Complex&) // 62行目の+演算の、yをbにコピーする際のコピーコンストラクタ
+Complex() // // 62行目の+演算の、cを生成するコンストラクタ
+operator=(const Complex& c) // 62行目の+演算の、cをzにコピーする際のコンストラクタ
+.Complex() // 62行目の+演算のために生成されたcのデコンストラクタ
+.Complex() // 62行目の+演算のために生成されたbのデコンストラクタ
+.Complex() // 62行目の+演算のために生成されたaのデコンストラクタ
+6.28+4.52i // 63行目の表示
+.Complex() // 64行目で実行される、zのでコンストラクタ
+.Complex() // 64行目で実行される、yのでコンストラクタ
+.Complex() // 64行目で実行される、xのでコンストラクタ
+
+（コメント）
+実際にプログラムを動かして目で確認することで、どのタイミングでコピーコンストラクタが実行されているのかよくわかった。実際のプログラムでは思いの外多数の箇所でコピーコンストラクタが実行されているだろうことが予想できた。
+
+<<EX-3.7>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out     
+max=5, sp=3, data=(0 -1073741824 0 )
+max=5, sp=3, data=(2 4 6 )
+max=10, sp=6, data=(1 3 5 2 4 6 )
+a.out(44239,0x105debdc0) malloc: *** error for object 0x7fa6bcc058d0: pointer being freed was not allocated
+a.out(44239,0x105debdc0) malloc: *** set a breakpoint in malloc_error_break to debug
+zsh: abort      ./a.out
+
+（コメント）
+動的割り当てをメンバーに持ったクラスの代入の場合と同様、確保されていない領域をfreeしようとしているというエラーが発生した。
+
+<<EX-3.8>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out 
+max=5, sp=3, data=(1 3 5 )
+max=5, sp=3, data=(2 4 6 )
+max=10, sp=6, data=(1 3 5 2 4 6 )
+
+（コメント）
+EX3-6と同様、コピーコンストラクタを定義することですんなりエラーを回避することができた。動的割り当てのメンバを持つクラスを定義する際は、必ず代入とコピーコンストラクタについて定義する必要があることを覚えた。
+
+<<EX-3.8 program>>
+
+#include <iostream>
+#include <assert.h>
+
+class stack
+{
+private:
+    int sp;
+    int max;
+    int *data;
+
+public:
+    stack(int sz = 100)
+    {
+        sp = 0;
+        max = sz;
+        data = new int[max];
+    }
+    stack(const stack &);
+    ~stack() { delete[] data; }
+    bool empty() { return sp == 0; }
+    void push(int d)
+    {
+        assert(sp <= max);
+        data[sp++] = d;
+    }
+    int top() { return data[sp - 1]; }
+    void pop()
+    {
+        assert(0 < sp);
+        --sp;
+    }
+    int size() { return sp; }
+    void dump(std::ostream &);
+    stack &operator=(const stack &);
+    stack plus1(stack, stack);
+};
+
+void stack::dump(std::ostream &os)
+{
+    std::cout << "max=" << max << ", ";
+    std::cout << "sp=" << sp << ", ";
+    std::cout << "data=(";
+    for (int i = 0; i < sp; i++)
+        os << data[i] << " ";
+    os << ")" << std::endl;
+}
+
+stack &stack::operator=(const stack &s)
+{
+    if (&s != this)
+    {
+        if (max < s.sp)
+        {
+            delete[] data;
+            data = new int[max = s.max];
+        }
+    }
+    sp = s.sp;
+    for (int i = 0; i < sp; i++)
+    {
+        data[i] = s.data[i];
+    }
+    return *this;
+}
+
+stack plus1(stack s1, stack s2)
+{
+    int sz = s1.size() + s2.size();
+    stack tmp(sz), s(sz);
+    while (!s2.empty())
+    {
+        tmp.push(s2.top());
+        s2.pop();
+    }
+    while (!s1.empty())
+    {
+        tmp.push(s1.top());
+        s1.pop();
+    }
+    while (!tmp.empty())
+    {
+        s.push(tmp.top());
+        tmp.pop();
+    }
+    return s;
+}
+
+stack::stack(const stack &s)
+{
+    max = s.max;
+    data = new int[max];
+    sp = s.sp;
+    for (int i = 0; i < sp; i++)
+    {
+        data[i] = s.data[i];
+    }
+}
+
+int main()
+{
+    stack s1(5);
+    stack s2(5);
+    stack s(10);
+
+    s1.push(1);
+    s1.push(3);
+    s1.push(5);
+    s2.push(2);
+    s2.push(4);
+    s2.push(6);
+
+    s = plus1(s1, s2);
+
+    s1.dump(std::cout);
+    s2.dump(std::cout);
+    s.dump(std::cout);
+
+    return 0;
+}
+
+<<EX-3.9>>
+
+（結果）
+＿Complex
+(base) wadatetsuya@MacBook-Pro program % ./a.out 
+Complex(3.14,2.26)
+Complex(const Complex&)
+Complex()
+Complex(const Complex&)
+Complex(const Complex&)
+Complex()
+operator=(const Complex& c)
+.Complex()
+.Complex()
+.Complex()
+6.28+4.52i
+.Complex()
+.Complex()
+.Complex()
+
+＿stack
+(base) wadatetsuya@MacBook-Pro program % ./a.out 
+max=5, sp=3, data=(1 3 5 )
+max=5, sp=3, data=(2 4 6 )
+max=10, sp=6, data=(1 3 5 2 4 6 )
+
+
+<<全体の感想>>
+
+演習を通してコンストラクタ、デストラクタ、代入の仕組みについて深く理解することができた。テキストを読むだけでは理解半分であったが、演習により実際に手を動かし、結果を目で見ることでしっくりと理解することができた。今までC言語のポインタに苦手意識を持っていたが、過去3回の演習を通じてだんだんと慣れてきた。今後の演習も楽しみである。

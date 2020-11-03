@@ -1,0 +1,1099 @@
+course: ISEX2
+year: 2020
+report: R4
+department: 工情
+id: 1865
+name: 和田哲也
+email: wada.tetsuya11@gmail.com
+computer: 自宅のパソコン　Mac
+compiler: g++
+hour: 2
+
+<<EX-4.1>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out 
+Skyline  3  5.73077  43000
+Accord  5  7.16667  34000
+Prius 5 15.4375 0
+
+（コメント）
+他の言語でも継承は使うのでスムーズにできた。
+
+<<EX-4.1 program>>
+
+#include <iostream>
+#include <string>
+
+class car
+{
+public:
+    std::string model;
+    std::string maker;
+    int displacement;
+    int ps;
+    int weight;
+    car() {}
+    car(const std::string &md, const std::string &mk, int dp, int p, int w) : model(md), maker(mk), displacement(dp), ps(p), weight(w) {}
+    ~car() {}
+    int no() const
+    {
+        if (displacement < 2000)
+            return 5;
+        else
+            return 3;
+    }
+    double pwratio() const { return (double)weight / (double)ps; }
+    int tax() const
+    {
+        if (weight < 1300)
+            return 34000;
+        else
+            return 43000;
+    }
+};
+
+class hybrid_car : public car
+{
+public:
+    int motor_ps;
+
+public:
+    hybrid_car() {}
+    hybrid_car(const std::string &md, const std::string &mk, int dp, int p, int w, int mps) : car(md, mk, dp, p, w), motor_ps(mps) {}
+    ~hybrid_car() {}
+
+    double pwratio() const { return (double)weight / (double)(ps + motor_ps); }
+    int tax() const { return 0; }
+};
+
+int main()
+{
+    car a = car("Skyline", "Nissan", 2987, 260, 1490);
+    car b = car("Accord", "Honda", 1997, 180, 1290);
+    hybrid_car h = hybrid_car("Prius", "Toyota", 1498, 60, 1235, 20);
+
+    std::cout << a.model << "  "
+              << a.no() << "  "
+              << a.pwratio() << "  "
+              << a.tax() << std::endl;
+
+    std::cout << b.model << "  "
+              << b.no() << "  "
+              << b.pwratio() << "  "
+              << b.tax() << std::endl;
+
+    std::cout << h.model << " "
+              << h.no() << " "
+              << h.pwratio() << " "
+              << h.tax() << std::endl;
+
+    return 0;
+}
+
+
+<<EX-4.2>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out     
+Skyline  3  5.73077  43000
+Accord  5  7.16667  34000
+Prius 5 15.4375 24000
+
+（コメント）
+継承を使えば大規模なクラスも簡潔に実装できそうに感じた。
+
+<<EX-4.3>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out     
+car_constracter
+car_constracter
+car_constracter
+hybrid_car_constracter
+Skyline  3  5.73077  43000
+Accord  5  7.16667  34000
+Prius 5 15.4375 24000
+hybrid_car_deconstracter
+car_deconstracter
+car_deconstracter
+car_deconstracter
+
+（コメント）
+予想通りの順番でコンストラクタ、デコンストラクタが実行されていた。
+
+<<EX-4.3 program>>
+
+#include <iostream>
+#include <string>
+
+class car
+{
+public:
+    std::string model;
+    std::string maker;
+    int displacement;
+    int ps;
+    int weight;
+    car() {}
+    car(const std::string &md, const std::string &mk, int dp, int p, int w) : model(md), maker(mk), displacement(dp), ps(p), weight(w)
+    {
+        std::cout << "car_constracter" << std::endl;
+    }
+    ~car() { std::cout << "car_deconstracter" << std::endl; }
+    int no() const
+    {
+        if (displacement < 2000)
+            return 5;
+        else
+            return 3;
+    }
+    double pwratio() const { return (double)weight / (double)ps; }
+    int tax() const
+    {
+        if (weight < 1300)
+            return 34000;
+        else
+            return 43000;
+    }
+};
+
+class hybrid_car : public car
+{
+public:
+    int motor_ps;
+
+public:
+    hybrid_car() {}
+    hybrid_car(const std::string &md, const std::string &mk, int dp, int p, int w, int mps) : car(md, mk, dp, p, w), motor_ps(mps)
+    {
+        std::cout << "hybrid_car_constracter" << std::endl;
+    }
+    ~hybrid_car() { std::cout << "hybrid_car_deconstracter" << std::endl; }
+
+    double pwratio() const { return (double)weight / (double)(ps + motor_ps); }
+    int tax() const { return car::tax() - 10000; }
+};
+
+int main()
+{
+    car a = car("Skyline", "Nissan", 2987, 260, 1490);
+    car b = car("Accord", "Honda", 1997, 180, 1290);
+    hybrid_car h = hybrid_car("Prius", "Toyota", 1498, 60, 1235, 20);
+
+    std::cout << a.model << "  "
+              << a.no() << "  "
+              << a.pwratio() << "  "
+              << a.tax() << std::endl;
+
+    std::cout << b.model << "  "
+              << b.no() << "  "
+              << b.pwratio() << "  "
+              << b.tax() << std::endl;
+
+    std::cout << h.model << " "
+              << h.no() << " "
+              << h.pwratio() << " "
+              << h.tax() << std::endl;
+
+    return 0;
+}
+
+
+<<EX-4.4>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out 
+n_push:0
+n_pop:0
+n_push:3
+n_pop:0
+n_push:3
+n_pop:3
+
+（コメント）
+思い通りに作ることができた。
+
+<<EX-4.4 program>>
+
+#include <iostream>
+#include <assert.h>
+
+class stack
+{
+private:
+    int sp;
+    int max;
+    int *data;
+
+public:
+    stack(int sz = 100) : sp(0), max(sz)
+    {
+        data = new int[max];
+    }
+    stack(const stack &);
+    ~stack() { delete[] data; }
+    bool empty() { return sp == 0; }
+    void push(int d)
+    {
+        assert(sp <= max);
+        data[sp++] = d;
+    }
+    int top() { return data[sp - 1]; }
+    void pop()
+    {
+        assert(0 < sp);
+        --sp;
+    }
+    int size() { return sp; }
+    void dump(std::ostream &);
+    stack &operator=(const stack &);
+    stack plus1(stack, stack);
+};
+
+class stack_ac : public stack
+{
+private:
+    int push_count;
+    int pop_count;
+
+public:
+    stack_ac() {}
+    stack_ac(int sz = 100) : stack(sz)
+    {
+        push_count = 0;
+        pop_count = 0;
+    }
+    ~stack_ac() {}
+    int n_push() { return push_count; }
+    int n_pop() { return pop_count; }
+    void push(int d)
+    {
+        stack::push(d);
+        push_count++;
+    }
+    void pop()
+    {
+        stack::pop();
+        pop_count++;
+    }
+};
+
+int main()
+{
+    stack_ac s(5);
+
+    std::cout << "n_push:" << s.n_push() << std::endl;
+    std::cout << "n_pop:" << s.n_pop() << std::endl;
+    s.push(1);
+    s.push(3);
+    s.push(5);
+    std::cout << "n_push:" << s.n_push() << std::endl;
+    std::cout << "n_pop:" << s.n_pop() << std::endl;
+    s.pop();
+    s.pop();
+    s.pop();
+    std::cout << "n_push:" << s.n_push() << std::endl;
+    std::cout << "n_pop:" << s.n_pop() << std::endl;
+
+    return 0;
+}
+
+<<EX-4.5>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out       
++--------------------+
+|  X              X  |
+| XXX   XXXXXX       |
+|XXXXX  XXXXXX  X    |
+| XXX          XXX   |
+|  X          XXXXX  |
+|            XXXXXXX |
+|           XXXXXXXXX|
+|  XXX       XXXXXXXX|
+|  XXX        XXXXX  |
+|X             XXX   |
++--------------------+
++--------------------+
+|    XXXXX  XXXXXX  X|
+|     XXX          XX|
+|      X          XXX|
+|                XXXX|
+|               XXXXX|
+|      XXX       XXXX|
+|      XXX        XXX|
+|    X             XX|
+|                   X|
+|                    |
++--------------------+
+
+（コメント）
+擬似的にではあるが描画を行うことができて感動した
+
+<<EX-4.5 program>>
+
+#include <iostream>
+#include <assert.h>
+
+inline int abs(int x) { return 0 <= x ? x : -x; }
+
+class canvas
+{
+public:
+    canvas(int sx, int sy);
+    ~canvas();
+    void clear();
+    void set(int x, int y);
+    void print(std::ostream &os);
+
+private:
+    int size_x;
+    int size_y;
+    char **p;
+    canvas(const canvas &);
+    canvas &operator=(const canvas &);
+};
+
+std::ostream &operator<<(std::ostream &os, canvas &c)
+{
+    c.print(os);
+    return os;
+}
+
+canvas::canvas(int sx, int sy) : size_x(sx), size_y(sy)
+{
+    p = new char *[size_x];
+    for (int x = 0; x < size_x; x++)
+        p[x] = new char[size_y];
+    this->clear();
+}
+
+canvas::~canvas()
+{
+    for (int x = 0; x < size_x; x++)
+        delete[] p[x];
+    delete[] p;
+}
+
+void canvas::clear()
+{
+    for (int x = 0; x < size_x; x++)
+    {
+        for (int y = 0; y < size_y; y++)
+        {
+            p[x][y] = ' ';
+        }
+    }
+}
+
+void canvas::set(int x, int y)
+{
+    if (0 <= x && x < size_x && 0 <= y && y < size_y)
+        p[x][y] = 'X';
+}
+
+void canvas::print(std::ostream &os)
+{
+    os << '+';
+    for (int x = 0; x < size_x; x++)
+    {
+        os << '-';
+    }
+    os << '+' << std::endl;
+    for (int y = size_y - 1; 0 <= y; y--)
+    {
+        os << '|';
+        for (int x = 0; x < size_x; x++)
+        {
+            os << p[x][y];
+        }
+        os << '|' << std::endl;
+    }
+    os << '+';
+    for (int x = 0; x < size_x; x++)
+    {
+        os << '-';
+    }
+    os << '+' << std::endl;
+}
+
+class point
+{
+private:
+    int px, py;
+
+public:
+    point(int x, int y);
+    ~point();
+    void move(int ix, int iy);
+    void draw(canvas &c);
+};
+
+point::point(int x, int y) : px(x), py(y) {}
+point::~point() {}
+void point::move(int ix, int iy)
+{
+    px += ix;
+    py += iy;
+}
+void point::draw(canvas &c) { c.set(px, py); }
+
+class rectangle
+{
+private:
+    int px, py;
+    int width, height;
+
+public:
+    rectangle(int x, int y, int w, int h);
+    ~rectangle();
+    void move(int ix, int iy);
+    void draw(canvas &c);
+};
+
+// 肌は遍浆として年盗してください
+rectangle::rectangle(int x, int y, int w, int h) : px(x), py(y), width(w), height(h) {}
+rectangle::~rectangle() {}
+void rectangle::move(int ix, int iy)
+{
+    px += ix;
+    py += iy;
+}
+void rectangle::draw(canvas &c)
+{
+    for (int i = 0; i < width; i++)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            c.set(px + i, py + j);
+        }
+    }
+}
+
+class diamond
+{
+private:
+    int px, py;
+    int radius;
+
+public:
+    diamond(int x, int y, int r);
+    ~diamond();
+    void move(int ix, int iy);
+    void draw(canvas &c);
+};
+
+diamond::diamond(int x, int y, int r) : px(x), py(y), radius(r) {}
+diamond::~diamond() {}
+void diamond::move(int ix, int iy)
+{
+    px += ix;
+    py += iy;
+}
+void diamond::draw(canvas &c)
+{
+    if (0 <= radius)
+    {
+        for (int r = -radius; r <= radius; r++)
+        {
+            int h = radius - abs(r);
+            for (int s = -h; s <= h; s++)
+            {
+                c.set(px + r, py + s);
+            }
+        }
+    }
+}
+
+int main(int argc, char **argv)
+{
+
+    point p1(0, 0);
+    point p2(17, 9);
+    point p3(19, 2);
+    rectangle r1(2, 1, 3, 2);
+    rectangle r2(7, 7, 6, 2);
+    diamond d1(2, 7, 2);
+    diamond d2(15, 3, 4);
+
+    canvas c(20, 10);
+    p1.draw(c);
+    p2.draw(c);
+    p3.draw(c);
+    r1.draw(c);
+    r2.draw(c);
+    d1.draw(c);
+    d2.draw(c);
+    std::cout << c;
+
+    p1.move(4, 2);
+    p2.move(4, 2);
+    p3.move(4, 2);
+    r1.move(4, 2);
+    r2.move(4, 2);
+    d1.move(4, 2);
+    d2.move(4, 2);
+
+    c.clear();
+    p1.draw(c);
+    p2.draw(c);
+    p3.draw(c);
+    r1.draw(c);
+    r2.draw(c);
+    d1.draw(c);
+    d2.draw(c);
+    std::cout << c;
+
+    return 0;
+}
+
+
+<<EX-4.6>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out     
++--------------------+
+|  X              X  |
+| XXX   XXXXXX       |
+|XXXXX  XXXXXX  X    |
+| XXX          XXX   |
+|  X          XXXXX  |
+|            XXXXXXX |
+|           XXXXXXXXX|
+|  XXX       XXXXXXXX|
+|  XXX        XXXXX  |
+|X             XXX   |
++--------------------+
++--------------------+
+|    XXXXX  XXXXXX  X|
+|     XXX          XX|
+|      X          XXX|
+|                XXXX|
+|               XXXXX|
+|      XXX       XXXX|
+|      XXX        XXX|
+|    X             XX|
+|                   X|
+|                    |
++--------------------+
+
+（コメント）
+objという仮装継承クラスを作ることでかなりコードがすっきりした
+
+<<EX-4.6 program>>
+
+#include <iostream>
+#include <assert.h>
+
+inline int abs(int x) { return 0 <= x ? x : -x; }
+
+class canvas
+{
+public:
+    canvas(int sx, int sy);
+    ~canvas();
+    void clear();
+    void set(int x, int y);
+    void print(std::ostream &os);
+
+private:
+    int size_x;
+    int size_y;
+    char **p;
+    canvas(const canvas &);
+    canvas &operator=(const canvas &);
+};
+
+std::ostream &operator<<(std::ostream &os, canvas &c)
+{
+    c.print(os);
+    return os;
+}
+
+canvas::canvas(int sx, int sy) : size_x(sx), size_y(sy)
+{
+    p = new char *[size_x];
+    for (int x = 0; x < size_x; x++)
+        p[x] = new char[size_y];
+    this->clear();
+}
+
+canvas::~canvas()
+{
+    for (int x = 0; x < size_x; x++)
+        delete[] p[x];
+    delete[] p;
+}
+
+void canvas::clear()
+{
+    for (int x = 0; x < size_x; x++)
+    {
+        for (int y = 0; y < size_y; y++)
+        {
+            p[x][y] = ' ';
+        }
+    }
+}
+
+void canvas::set(int x, int y)
+{
+    if (0 <= x && x < size_x && 0 <= y && y < size_y)
+        p[x][y] = 'X';
+}
+
+void canvas::print(std::ostream &os)
+{
+    os << '+';
+    for (int x = 0; x < size_x; x++)
+    {
+        os << '-';
+    }
+    os << '+' << std::endl;
+    for (int y = size_y - 1; 0 <= y; y--)
+    {
+        os << '|';
+        for (int x = 0; x < size_x; x++)
+        {
+            os << p[x][y];
+        }
+        os << '|' << std::endl;
+    }
+    os << '+';
+    for (int x = 0; x < size_x; x++)
+    {
+        os << '-';
+    }
+    os << '+' << std::endl;
+}
+
+class obj
+{
+public:
+    obj(int x, int y, const std::string &t);
+    ~obj();
+    void move(int ix, int iy);
+    void draw(canvas &c);
+
+public:
+    int px, py;
+    std::string type;
+};
+
+obj::obj(int x, int y, const std::string &t) : px(x), py(y), type(t) {}
+
+obj::~obj() {}
+
+void obj::move(int ix, int iy)
+{
+    px += ix;
+    py += iy;
+}
+
+class point : public obj
+{
+
+public:
+    point(int x, int y);
+    ~point();
+    void draw(canvas &c);
+};
+
+point::point(int x, int y) : obj(x, y, "point") {}
+point::~point() {}
+void point::draw(canvas &c) { c.set(px, py); }
+
+class rectangle : public obj
+{
+private:
+    int width, height;
+
+public:
+    rectangle(int x, int y, int w, int h);
+    ~rectangle();
+    void draw(canvas &c);
+};
+
+// 肌は遍浆として年盗してください
+rectangle::rectangle(int x, int y, int w, int h) : obj(x, y, "rectangle"), width(w), height(h) {}
+rectangle::~rectangle() {}
+void rectangle::draw(canvas &c)
+{
+    for (int i = 0; i < width; i++)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            c.set(px + i, py + j);
+        }
+    }
+}
+
+class diamond : public obj
+{
+private:
+    int radius;
+
+public:
+    diamond(int x, int y, int r);
+    ~diamond();
+    void draw(canvas &c);
+};
+
+diamond::diamond(int x, int y, int r) : obj(x, y, "diamond"), radius(r) {}
+diamond::~diamond() {}
+void diamond::draw(canvas &c)
+{
+    if (0 <= radius)
+    {
+        for (int r = -radius; r <= radius; r++)
+        {
+            int h = radius - abs(r);
+            for (int s = -h; s <= h; s++)
+            {
+                c.set(px + r, py + s);
+            }
+        }
+    }
+}
+
+int main(int argc, char **argv)
+{
+
+    point p1(0, 0);
+    point p2(17, 9);
+    point p3(19, 2);
+    rectangle r1(2, 1, 3, 2);
+    rectangle r2(7, 7, 6, 2);
+    diamond d1(2, 7, 2);
+    diamond d2(15, 3, 4);
+
+    canvas c(20, 10);
+    p1.draw(c);
+    p2.draw(c);
+    p3.draw(c);
+    r1.draw(c);
+    r2.draw(c);
+    d1.draw(c);
+    d2.draw(c);
+    std::cout << c;
+
+    p1.move(4, 2);
+    p2.move(4, 2);
+    p3.move(4, 2);
+    r1.move(4, 2);
+    r2.move(4, 2);
+    d1.move(4, 2);
+    d2.move(4, 2);
+
+    c.clear();
+    p1.draw(c);
+    p2.draw(c);
+    p3.draw(c);
+    r1.draw(c);
+    r2.draw(c);
+    d1.draw(c);
+    d2.draw(c);
+    std::cout << c;
+
+    return 0;
+}
+
+
+<<EX-4.7>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % g++ ex4-6.cc
+Undefined symbols for architecture x86_64:
+  "obj::draw(canvas&)", referenced from:
+      _main in ccB5Q8bj.o
+ld: symbol(s) not found for architecture x86_64
+collect2: error: ld returned 1 exit status
+
+（コメント）
+drawメソッドを実行しようとした段階で、そのようなものは存在しない、というエラーが出た。
+
+<<EX-4.8>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out 
++--------------------+
+|  X              X  |
+| XXX   XXXXXX       |
+|XXXXX  XXXXXX  X    |
+| XXX          XXX   |
+|  X          XXXXX  |
+|            XXXXXXX |
+|           XXXXXXXXX|
+|  XXX       XXXXXXXX|
+|  XXX        XXXXX  |
+|X             XXX   |
++--------------------+
++--------------------+
+|    XXXXX  XXXXXX  X|
+|     XXX          XX|
+|      X          XXX|
+|                XXXX|
+|               XXXXX|
+|      XXX       XXXX|
+|      XXX        XXX|
+|    X             XX|
+|                   X|
+|                    |
++--------------------+
+
+（コメント）
+実際にコードが動くのを見てなるほどな、と納得した。
+
+<<EX-4.9>>
+
+（結果）
+(base) wadatetsuya@MacBook-Pro program % ./a.out 
++--------------------+
+|  X              X  |
+| XXX   XXXXXX       |
+|XXXXX  XXXXXX  X    |
+| XXX          XXX   |
+|  X          XXXXX  |
+|            XXXXXXX |
+|           XXXXXXXXX|
+|  XXX       XXXXXXXX|
+|  XXX        XXXXX  |
+|X             XXX   |
++--------------------+
++--------------------+
+|    XXXXX  XXXXXX  X|
+|     XXX          XX|
+|      X          XXX|
+|                XXXX|
+|               XXXXX|
+|      XXX       XXXX|
+|      XXX        XXX|
+|    X             XX|
+|                   X|
+|                    |
++--------------------+
+
+（コメント）
+virtualとつけるだけで動作させることができるのには驚いた。
+
+<<EX-4.9 program>>
+
+#include <iostream>
+#include <assert.h>
+#include <vector>
+
+inline int abs(int x) { return 0 <= x ? x : -x; }
+
+class canvas
+{
+public:
+    canvas(int sx, int sy);
+    ~canvas();
+    void clear();
+    void set(int x, int y);
+    void print(std::ostream &os);
+
+private:
+    int size_x;
+    int size_y;
+    char **p;
+    canvas(const canvas &);
+    canvas &operator=(const canvas &);
+};
+
+std::ostream &operator<<(std::ostream &os, canvas &c)
+{
+    c.print(os);
+    return os;
+}
+
+canvas::canvas(int sx, int sy) : size_x(sx), size_y(sy)
+{
+    p = new char *[size_x];
+    for (int x = 0; x < size_x; x++)
+        p[x] = new char[size_y];
+    this->clear();
+}
+
+canvas::~canvas()
+{
+    for (int x = 0; x < size_x; x++)
+        delete[] p[x];
+    delete[] p;
+}
+
+void canvas::clear()
+{
+    for (int x = 0; x < size_x; x++)
+    {
+        for (int y = 0; y < size_y; y++)
+        {
+            p[x][y] = ' ';
+        }
+    }
+}
+
+void canvas::set(int x, int y)
+{
+    if (0 <= x && x < size_x && 0 <= y && y < size_y)
+        p[x][y] = 'X';
+}
+
+void canvas::print(std::ostream &os)
+{
+    os << '+';
+    for (int x = 0; x < size_x; x++)
+    {
+        os << '-';
+    }
+    os << '+' << std::endl;
+    for (int y = size_y - 1; 0 <= y; y--)
+    {
+        os << '|';
+        for (int x = 0; x < size_x; x++)
+        {
+            os << p[x][y];
+        }
+        os << '|' << std::endl;
+    }
+    os << '+';
+    for (int x = 0; x < size_x; x++)
+    {
+        os << '-';
+    }
+    os << '+' << std::endl;
+}
+
+class obj
+{
+public:
+    obj(int x, int y, const std::string &t);
+    virtual ~obj();
+    void move(int ix, int iy);
+    virtual void draw(canvas &c) = 0;
+
+public:
+    int px, py;
+    std::string type;
+};
+
+obj::obj(int x, int y, const std::string &t) : px(x), py(y), type(t) {}
+
+obj::~obj() {}
+
+void obj::move(int ix, int iy)
+{
+    px += ix;
+    py += iy;
+}
+
+class point : public obj
+{
+
+public:
+    point(int x, int y);
+    ~point();
+    void draw(canvas &c);
+};
+
+point::point(int x, int y) : obj(x, y, "point") {}
+point::~point() {}
+void point::draw(canvas &c) { c.set(px, py); }
+
+class rectangle : public obj
+{
+private:
+    int width, height;
+
+public:
+    rectangle(int x, int y, int w, int h);
+    ~rectangle();
+    void draw(canvas &c);
+};
+
+// 肌は遍浆として年盗してください
+rectangle::rectangle(int x, int y, int w, int h) : obj(x, y, "rectangle"), width(w), height(h) {}
+rectangle::~rectangle() {}
+void rectangle::draw(canvas &c)
+{
+    for (int i = 0; i < width; i++)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            c.set(px + i, py + j);
+        }
+    }
+}
+
+class diamond : public obj
+{
+private:
+    int radius;
+
+public:
+    diamond(int x, int y, int r);
+    ~diamond();
+    void draw(canvas &c);
+};
+
+diamond::diamond(int x, int y, int r) : obj(x, y, "diamond"), radius(r) {}
+diamond::~diamond() {}
+void diamond::draw(canvas &c)
+{
+    if (0 <= radius)
+    {
+        for (int r = -radius; r <= radius; r++)
+        {
+            int h = radius - abs(r);
+            for (int s = -h; s <= h; s++)
+            {
+                c.set(px + r, py + s);
+            }
+        }
+    }
+}
+
+int main(int argc, char **argv)
+{
+
+    std::vector<obj *> vec;
+
+    // 配列に図形要素を放り込む
+    vec.push_back(new point(0, 0));
+    vec.push_back(new point(17, 9));
+    vec.push_back(new point(19, 2));
+    vec.push_back(new rectangle(2, 1, 3, 2));
+    vec.push_back(new rectangle(7, 7, 6, 2));
+    vec.push_back(new diamond(2, 7, 2));
+    vec.push_back(new diamond(15, 3, 4));
+
+    canvas c(20, 10);
+    // まとめて描画する
+    for (int i = 0; i < vec.size(); i++)
+        vec[i]->draw(c);
+    std::cout << c;
+
+    // まとめて移動する
+    for (int i = 0; i < vec.size(); i++)
+        vec[i]->move(4, 2);
+
+    c.clear();
+    // まとめて描画する
+    for (int i = 0; i < vec.size(); i++)
+        vec[i]->draw(c);
+
+    std::cout << c;
+
+    // まとめて delete
+    for (int i = 0; i < vec.size(); i++)
+        delete vec[i];
+
+    return 0;
+}
+
+
+<<全体の感想>>
+
+最後にはかなり発展的な内容になっていたにもかかわらず、演習全体を通してあまり混乱することなく学習を進めることができた。よくできたテキストのおかげだと思います。
+ここで学んだ内容を実験棟の他の授業で活用することができ、さらに面白く感じました。最近はpython等が便利で、計算速度にこだわることも稀なため、C++でなければならない状況は少ないですが、コンピューターの仕組みを理解する上では非常に有意義でした。今後も機会があれば積極的にC++を使って実装してみたいと思います。

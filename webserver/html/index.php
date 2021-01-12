@@ -116,12 +116,16 @@ EOD;
 // 前へ戻るリンク
 if ($page>1) {
     $back = $page-1;
-    echo "<div class='p-1'><a href='/?page=".$back."'前へ</a></div>";
+    echo "<div class='p-1'><a href='/?page=".$back."'>前へ</a></div>";
 }
 // ページ番号指定リンク
 $page_count = ceil(count($posts)/10);
 for ($i=1;$i<=$page_count;$i++) {
-    echo "<div class='p-1'><a href='/?page=".$i."'>".$i."</a></div>";
+    if ($i==$page) {
+        echo "<div class='p-1'>".$i."</div>";
+    } else {
+        echo "<div class='p-1'><a href='/?page=".$i."'>".$i."</a></div>";
+    }
 }
 // 次へ進むリンク
 if ($page<$page_count) {

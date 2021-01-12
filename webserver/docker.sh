@@ -1,0 +1,1 @@
+docker run -p 8080:80 --name webserver -v "$PWD"/html:/var/www/html php:7.2-apache

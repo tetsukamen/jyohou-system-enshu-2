@@ -8,6 +8,7 @@ include('./header.php')
 ?>
 
 <main class="container">
+    <h1 class="h3 m-3">トップページ</h1>
     <div class="card my-3">
         <form class="card-body" method="POST" action="/">
             <div class="mb-3">
@@ -16,12 +17,11 @@ include('./header.php')
             </div>
             <div class="mb-3">
                 <label for="comment" class="form-label">コメント</label>
-                <textarea class="form-control" name="comment" id="comment" cols="50" rows="5"></textarea>
+                <textarea class="form-control" name="comment" id="comment" rows="3"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">投稿</button>
         </form>
     </div>
-
 <?php
 
 // 変数に格納したデータを表示

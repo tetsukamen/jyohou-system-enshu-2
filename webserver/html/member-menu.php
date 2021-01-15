@@ -23,7 +23,9 @@ if ($_POST) {
         }
         fclose($handle);
     }
-    $errors[] = '会員名またはパスワードが間違っています。';
+    if (!$logined) {
+        $errors[] = '会員名またはパスワードが間違っています。';
+    }
 }
 
 include('./header.php');
@@ -34,20 +36,16 @@ if ($logined):
 <main class="container">
     <h1 class="h3 m-3">会員メニュー</h1>
     <div class="card my-3">
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                    <th>スレッド名</th>
-                    <th>作成者</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><a href="/">サンプルスレッド</a></td>
-                        <td>俺です</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <form class="card-body" method="POST" action="/thread-create.php">
+            <div class="mb-3">
+                <label for="thread-name" class="form-label">スレッド名</label>
+                <input type="text" class="form-control" name="thread-name" id="thread-name">
+                <?php echo "<input type='hidden' name='name' value='".$name."'>" ?>
+                <?php echo "<input type='hidden' name='password' value='".$password."'>" ?>
+                <input type='hidden' name='status' value='request'>
+            </div>
+            <button type="submit" class="btn btn-primary">スレッドを作成</button>
+        </form>
     </div>
 </main>
 

@@ -4,8 +4,9 @@ header("HTTP/1.0 200 OK");
 header("Server: Apache");
 header("Content-Type: text/html");
 
-include('./header.php')
+include('./header.php');
 ?>
+
 
 <main class="container">
     <h1 class="h3 m-3">トップページ</h1>

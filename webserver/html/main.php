@@ -20,6 +20,7 @@ include('./header.php');
                 <label for="comment" class="form-label">コメント</label>
                 <textarea class="form-control" name="comment" id="comment" rows="3"></textarea>
             </div>
+            <input type="hidden" name="thread_id" value='<?php echo $thread_id ?>'>
             <button type="submit" class="btn btn-primary">投稿</button>
         </form>
     </div>

@@ -6,6 +6,17 @@
 // 初期設定
 date_default_timezone_set('Asia/Tokyo'); // タイムゾーンの設定
 
+$thread_id = 0; // デフォルトはスレッド番号1
+$page = 1; // デフォルトは１ページを表示
+if ($_GET) {
+    if ($_GET['page']) {
+        $page = $_GET['page'];
+    }
+    if ($_GET['thread_id']) {
+        $thread_id=$_GET['thread_id'];
+    }
+}
+
 // ポストされた情報をログファイルに保存
 if ($_POST) {
     // カンマ、改行コードを置き換え
@@ -21,17 +32,6 @@ if ($_POST) {
     $fp = fopen($thread_id.'.csv', 'a');
     fwrite($fp, $line."\n");
     fclose($fp);
-}
-
-$thread_id = 0; // デフォルトはスレッド番号1
-$page = 1; // デフォルトは１ページを表示
-if ($_GET) {
-    if ($_GET['page']) {
-        $page = $_GET['page'];
-    }
-    if ($_GET['thread_id']) {
-        $thread_id=$_GET['thread_id'];
-    }
 }
 
 // csvのデータを変数に格納

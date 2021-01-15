@@ -5,6 +5,7 @@ header("Server: Apache");
 header("Content-Type: text/html");
 
 $errors = [];
+$messages = [];
 
 if ($_POST) {
     // カンマを置き換え
@@ -29,6 +30,7 @@ if ($_POST) {
         $handle = fopen('members.csv', 'a');
         fwrite($handle, $line."\n");
         fclose($handle);
+        $messages[] = '登録しました。';
     }
 }
 
@@ -41,6 +43,10 @@ include('./header.php');
     foreach ($errors as $error) {
         echo "<div class='text-danger'>".$error."</div>";
     }
+    foreach ($messages as $msg) {
+        echo "<div class='text-success'>".$msg."</div>";
+    }
+    if (!$messages):
     ?>
     <div class="card my-3">
         <form class="card-body" method="POST" action="/sign-up.php">
@@ -55,6 +61,9 @@ include('./header.php');
             <button type="submit" class="btn btn-primary">登録</button>
         </form>
     </div>
+    <?php else: ?>
+    <div><a href="/member-menu.php">会員メニューへ</a></div>
+    <?php endif; ?>
 </main>
 
 <?php

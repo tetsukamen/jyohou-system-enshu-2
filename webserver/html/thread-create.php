@@ -61,7 +61,7 @@ if ($errors):
 
 <?php elseif ($_POST['status']=='confirm'):
 // スレッドリストに追記
-if (($handle=fopen('thread-list.csv', 'w'))!==false) {
+if (($handle=fopen('thread-list.csv', 'a'))!==false) {
     $data = array($thread_name,$name,$password);
     $line = implode(',', $data);
     fwrite($handle, $line."\n");
@@ -75,12 +75,12 @@ if (($handle=fopen('thread-list.csv', 'r'))!==false) {
     }
     fclose($handle);
 }
-touch($count.'.csv');
+touch(($count-1).'.csv');
 ?>
     <div class="card my-3">
         <div class="card-header">スレッドを作成しました。</div>
         <div class="card-body">
-            <div>スレッド名：<a href="/?thread_id=<?php echo $count ?>"><?php echo $thread_name ?></a></div>
+            <div>スレッド名：<a href="/?thread_id=<?php echo $count-1 ?>"><?php echo $thread_name ?></a></div>
         </div>
     </div>
 <?php endif; ?>

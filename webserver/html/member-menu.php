@@ -36,6 +36,7 @@ if ($logined):
 <main class="container">
     <h1 class="h3 m-3">会員メニュー</h1>
     <div class="card my-3">
+        <div class="card-header">スレッド作成</div>
         <form class="card-body" method="POST" action="/thread-create.php">
             <div class="mb-3">
                 <label for="thread-name" class="form-label">スレッド名</label>
@@ -52,13 +53,13 @@ if ($logined):
 <?php else: ?>
 <!-- ログインウィジェット -->
 <main class="container">
-    <h1 class="h3 m-3">ログインページ</h1>
     <?php
     foreach ($errors as $error) {
         echo "<div class='text-danger'>".$error."</div>";
     }
     ?>
     <div class="card my-3">
+        <div class="card-header">ログインしてください</div>
         <form class="card-body" method="POST" action="/member-menu.php">
             <div class="mb-3">
                 <label for="name" class="form-label">会員名</label>

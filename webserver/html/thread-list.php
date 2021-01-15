@@ -28,7 +28,7 @@ include('./header.php');
                     <?php
                     foreach ($threads as $idx => $thread) {
                         echo "<tr>";
-                        echo "<td><a href='/?thread=".$idx."'>".$thread[0]."</a></td>";
+                        echo "<td><a href='/?thread_id=".$idx."'>".$thread[0]."</a></td>";
                         echo "<td>".$thread[1]."</td>";
                         echo "</tr>";
                     }

@@ -21,10 +21,13 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">トップ</a>
+                    <a class="nav-link" aria-current="page" href="/">トップ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">会員登録</a>
+                    <a class="nav-link" href="/member-menu.php">会員メニュー</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/sign-up.php">会員登録</a>
                 </li>
             </ul>
             </div>

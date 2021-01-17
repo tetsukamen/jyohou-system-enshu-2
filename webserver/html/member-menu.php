@@ -1,6 +1,5 @@
 <?php
 // レスポンスヘッダの設定
-header("HTTP/1.0 200 OK");
 header("Server: Apache");
 header("Content-Type: text/html");
 
@@ -25,6 +24,9 @@ if ($_POST) {
     }
     if (!$logined) {
         $errors[] = '会員名またはパスワードが間違っています。';
+        header("HTTP/1.0 403 Forbidden");
+    } else {
+        header("HTTP/1.0 200 OK");
     }
 }
 
